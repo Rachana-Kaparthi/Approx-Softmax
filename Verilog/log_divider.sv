@@ -3,7 +3,7 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 16.04.2024 20:56:58
+// Create Date: 04/18/2024 12:27:06 PM
 // Design Name: 
 // Module Name: log_divider
 // Project Name: 
@@ -20,18 +20,53 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module log_divider(input [31:0]XL, [31:0]RH, Y[31:0], output [7:0]QL );
+module log_divider(
+    input [4:0]pos_nu,pos_de,
+    input [63:0]num,
+    input [31:0]den,
+    output [7:0]quo_low,
+    input [5:0]LOD_nu, 
+    input [4:0]LOD_de
+    );
+    
 
-wire [63:0]data_merge;
-wire [5:0]sel_64;
-wire [4:0]sel_32;
+ wire [32:0]quo_temp;
+ wire [5:0]quo_1;
+ wire [31:0]quo_2;
+ wire [3:0]pos_n;
+ wire [63:0]num_temp;
+ wire [31:0]den_temp;
+ 
+ assign pos_n = pos_nu - 8;
+ 
 
-assign data_merge = {XL,RH}; 
+ 
+ wire [5:0]LOD_n;
+ wire [4:0]LOD_d;
+ wire [31:0]k1,k2;
+ wire [5:0]s1;
+ wire [4:0]s2;
+ 
+ assign LOD_n = 64 - LOD_nu; 
+  assign LOD_d = 32 - LOD_de; 
 
-////////////////LOD - 64bits/////////
+ 
+ assign s1 = (pos_nu > 4'd8) ? (pos_n+(32-LOD_n)) : (64-LOD_n);
+ assign s2 = pos_de - LOD_d ;
+ 
+ 
+ assign num_temp=num << (LOD_n-1);
+ assign den_temp=den << (LOD_d-1);
+ assign k1 = num_temp[63:32];
+ assign k2 = den_temp[31:0];
+ 
+ 
+ assign quo_1 = s1-s2;
+ assign quo_2 = k1-k2;
+ 
+// assign quo_temp = quo_1 + quo_2;
 
-assign sel_64[5] = (data_merge[63:32] != 0) ? 1  : 0;
-assign sel_64[4] = sel_64[5] ? ((data_merge[63:48] != 0) ? 1  : 0) : ((data_merge[31:16] != 0) ? 1  : 0);
-assign sel_64[3] = sel_64[5] ? (sel_64[4] ? ((data_merge[63:56] != 0) ? 1 : 0) : ((data_merge[47:40] != 0) ? 1 : 0)) : (sel_64[4] ? ((data_merge[31:24] != 0) ? 1 : 0) : ((data_merge[15:8] != 0) ? 1 : 0));
-assign sel_64[2] = (sel_64[5:3] == 3'b111) ? ((data_merge[63:60] !=0 ) ? 1 : 0 ) :((sel_64[5:3] == 3'b110) ? ((data_merge[59:56] !=0 ) ? 1 : 0 ) )
+ assign quo_low = (k1 >k2) ? (quo_1 ? ((1+k1-k2) << quo_1) : ((1+k1-k2) >> quo_1)): (quo_1 ? ((2+k1-k2) << (quo_1-1)) : ((2+k1-k2) >> (quo_1-1)));
+     
+    
 endmodule
