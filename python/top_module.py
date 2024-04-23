@@ -25,8 +25,10 @@ def top_module(x,n):
     lod_num = [""]*n
     softmax_value = [""]*n
     for i in range(n) :
-        exp_1[i] = softmax(x[i])
-    exp = [sublist[0] for sublist in exp_1]
+        exp[i] = softmax(x[i])
+        
+    print("exp_1",exp)
+    #exp = [sublist[0] for sublist in exp_1]
     print("exponent_top",exp)
     [pos_den,Den] = denominator(exp,n)
     lod_den = leading_one_detector32(Den)
@@ -44,7 +46,8 @@ def top_module(x,n):
     for i in range(n):
         print(softmax_value[i])
     return softmax_value
+
 x = ["1010111011011010","1000110011011011","0010111011010010","0010011011111010","0100001011011010"]
 softmax_value = top_module(x,5)
-
+print(softmax_value)
     
