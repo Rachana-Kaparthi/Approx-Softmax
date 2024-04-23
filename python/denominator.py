@@ -8,8 +8,10 @@ def right_shift_string(string, shift_amount):
     return shifted_string
 
 
-def binary_to_decimal(binary_data):
+def binary_to_decimal_den(binary_data):
     # Split the binary string into integer and fractional parts
+    print("Binary :",binary_data)
+    binary_data=str(binary_data)
     integer_part = int(binary_data[:15], 2)
     fractional_part = int(binary_data[15:], 2)
 
@@ -56,14 +58,16 @@ def denominator(exp,N):
 
         
     # Find the highest exponent among exp1, exp2, exp3, exp4, exp5
-    highest = max(int(element[:4], 2) for element in exp)
+    highest = max(int(element[:5], 2) for element in exp)
+    print("Highest:",highest)
     exp_temp = [""]*N
     exp_int=[""]*N
     # Adjust exponents based on the highest exponent
     for i in  range (N):
-        shift=highest-int(exp[i][:4],2)
-        exp_temp[i] = right_shift_string(exp[i][4:],shift) if ((highest > int(exp[i][0:4], 2))) else exp[i][4:]+'0'*14
-        exp_int[i]=binary_to_decimal(exp_temp[i])
+        shift=15-int(exp[i][:5],2)
+        print(shift)
+        exp_temp[i] = right_shift_string(exp[i][5:],shift) if ((highest > int(exp[i][0:5], 2))) else (15-int(exp[i][0:5], 2))*'0'+exp[i][5:]+(int(exp[i][0:5],2)-1)*'0'
+        exp_int[i]=binary_to_decimal_den(exp_temp[i])
         
     den = sum(float(x) for x in exp_int)
 
@@ -83,5 +87,5 @@ def denominator(exp,N):
 #     '00100111111111000000',
 #     '00010000000001111100'
 # ]
-# pos,Den = denominator(exp)
+# pos,Den = denominator(exp,5)
 # print("pos,Den:",pos, Den)
