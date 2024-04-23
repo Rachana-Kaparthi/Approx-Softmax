@@ -21,12 +21,12 @@
 
 
 module array_divider(input [7:0]X,[31:0]Y,output [31:0]RH,[7:0]QH);
-wire [32:0]XH; 
+wire [31:0]XH; 
 wire [31:0]Bout1,Bout2,Bout3,Bout4,Bout5,Bout6,Bout7,Bout8;
-wire [31:0]R1,R2,R2,R3,R4,R5,R6,R7,R8;
+wire [31:0]R1,R2,R3,R4,R5,R6,R7,R8;
 wire [32:0]remainder1,remainder2,remainder3,remainder4,remainder5,remainder6,remainder7,remainder8;
 
-assign XH = {X,25'b0};
+assign XH = {X,24'b0};
 //// row1 ////
 
 exdcr a1(XH[0],Y[0],1'b0,Bout1[0],R1[0]);
@@ -37,7 +37,7 @@ for (i =1;i<=31;i++)begin
 exdcr a2(XH[i],Y[i],Bout1[i-1],Bout1[i],R1[i]);
 end
 endgenerate
-assign QH[7] = XH[32] || (~Bout1[31]) ; 
+assign QH[7] = Bout1[31] ? 0 : 1  ; 
 
 assign remainder1 = QH[7] ? {R1[31:0],1'b0} : {XH[31:0],1'b0} ;
 
@@ -63,7 +63,7 @@ exdcr a5(remainder2[0],Y[0],1'b0,Bout3[0],R3[0]);
 genvar k ;
 generate
 for (k =1;k<=31;k++)begin
-exdcr a6(remainder2[k],Y[k],Bout3[j-1],Bout3[j],R3[j]);
+exdcr a6(remainder2[k],Y[k],Bout3[k-1],Bout3[k],R3[k]);
 end
 endgenerate
 assign QH[5] = remainder2[32] || (~Bout3[31]) ; 
@@ -78,7 +78,7 @@ exdcr a7(remainder3[0],Y[0],1'b0,Bout4[0],R4[0]);
 
 genvar l ;
 generate
-for (l =1;l<=3;l++)begin
+for (l =1;l<=31;l++)begin
 exdcr a8(remainder3[l],Y[l],Bout4[l-1],Bout4[l],R4[l]);
 end
 endgenerate
@@ -93,8 +93,8 @@ exdcr a9(remainder4[0],Y[0],1'b0,Bout5[0],R5[0]);
 
 genvar m ;
 generate
-for (m =1;m<=3;m++)begin
-exdcr a10(remainder4[l],Y[l],Bout5[l-1],Bout5[l],R5[l]);
+for (m =1;m<=31;m++)begin
+exdcr a10(remainder4[m],Y[m],Bout5[m-1],Bout5[m],R5[m]);
 end
 endgenerate
 assign QH[3] = remainder4[32] || (~Bout5[31]) ; 
@@ -107,8 +107,8 @@ exdcr a11(remainder5[0],Y[0],1'b0,Bout6[0],R6[0]);
 
 genvar n ;
 generate
-for (n =1;n<=3;n++)begin
-exdcr a12(remainder5[l],Y[l],Bout6[l-1],Bout6[l],R6[l]);
+for (n =1;n<=31;n++)begin
+exdcr a12(remainder5[n],Y[n],Bout6[n-1],Bout6[n],R6[n]);
 end
 endgenerate
 assign QH[2] = remainder5[32] || (~Bout6[31]) ; 
@@ -121,8 +121,8 @@ exdcr a13(remainder6[0],Y[0],1'b0,Bout7[0],R7[0]);
 
 genvar p ;
 generate
-for (p =1;p<=3;p++)begin
-exdcr a14(remainder6[l],Y[l],Bout7[l-1],Bout8[l],R7[l]);
+for (p =1;p<=31;p++)begin
+exdcr a14(remainder6[p],Y[p],Bout7[p-1],Bout7[p],R7[p]);
 end
 endgenerate
 assign QH[1] = remainder6[32] || (~Bout7[31]) ; 
@@ -135,8 +135,8 @@ exdcr a15(remainder7[0],Y[0],1'b0,Bout8[0],R8[0]);
 
 genvar r ;
 generate
-for (r =1;r<=3;r++)begin
-exdcr a16(remainder7[l],Y[l],Bout8[l-1],Bout8[l],R8[l]);
+for (r =1;r<=31;r++)begin
+exdcr a16(remainder7[r],Y[r],Bout8[r-1],Bout8[r],R8[r]);
 end
 endgenerate
 assign QH[0] = remainder7[32] || (~Bout8[31]) ; 
@@ -148,4 +148,3 @@ assign remainder8= QH[0] ? {R8[31:0],1'b0} : {remainder7[31:0],1'b0} ;
 assign RH = remainder8[32:1];
 
 endmodule
-
