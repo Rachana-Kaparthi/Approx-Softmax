@@ -21,7 +21,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module softmax #(parameter wid_int = 5, wid_MSB1 = 4, wid_MSB2 = 4, wid_LSB = 0, wid_MSB3 = 4)(input [15:0]x, output [20:0]exp);
+module softmax #(parameter wid_int = 5, wid_MSB1 = 4, wid_MSB2 = 4, wid_LSB = 0, wid_MSB3 = 4)(input [16:0]x, output [20:0]exp);
 
 /// x range -10 to 10
 
@@ -45,10 +45,10 @@ logic [4:0]position, position1,position2,position3;
 //logic [15:0]expval_MSB2[1:16];
 //logic [15:0]expval_LSB[1:4];
 
-assign x_int = x[15:(16-wid_int)];
-assign x_msb1 = x[(15-wid_int):(16-wid_int-wid_MSB1)];
-assign x_msb2 = x[(15-wid_int-wid_MSB1):(16-wid_int-wid_MSB1-wid_MSB2)];
-assign x_msb3 = x[(15-wid_int-wid_MSB1-wid_MSB2):0];
+assign x_int = x[16:(17-wid_int)];
+assign x_msb1 = x[(16-wid_int):(17-wid_int-wid_MSB1)];
+assign x_msb2 = x[(16-wid_int-wid_MSB1):(17-wid_int-wid_MSB1-wid_MSB2)];
+assign x_msb3 = x[(16-wid_int-wid_MSB1-wid_MSB2):0];
 ///////////// 4 bits position data, 16bits value
 
 
