@@ -2,7 +2,7 @@
 
 `include "booth_reduction.sv"
 
-module booth #(parameter N = 16)
+module booth #(parameter N = 16,lsb = 0)
             (input [N-1:0] a,
              input [N-1:0] b,
              output reg [(2*N)-1:0] res );
@@ -89,6 +89,18 @@ assign pp[7] = {{3{r_msb[7]}}, {(s[7] ? (r_slice[7]<<1) : r_slice[7])},14'b0};
 
 pp_reduction_booth #(.Bitwidth(N)) c1 (.pp(pp),.res(res));
 
+
+if(lsb == 1'b1) begin
+    assign pp[5] = 'b0;
+    assign pp[6] = 'b0;
+    assign pp[7] = {18'b1,14'b0};
+    pp_reduction_booth#(.Bitwidth(N)) a1 (
+
+    .pp(pp),
+    .res(res));
+    end
+ else
+    pp_reduction_booth#(.Bitwidth(N)) a2 (.pp(pp),  .res(res));
 //assign res = pp1+(pp2<<1);
 
 endmodule
