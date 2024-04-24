@@ -21,22 +21,22 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module softmax_4 #(parameter wid_int = 5, wid_MSB1 = 4, wid_MSB2 = 4, wid_LSB3 = 4, wid_MSB3 = 0)(input [16:0]x, output [20:0]exp);
+module softmax_4t #(parameter wid_int = 5, wid_MSB1 = 4, wid_MSB2 = 4, wid_MSB3 = 0,wid_LSB = 4)(input [16:0]x, output [20:0]exp);
 
 /// x range -10 to 10
 
 logic [19:0]exp_int[1:21]; 
 logic [19:0]exp_MSB1[1:31];
-logic [19:0]exp_MSB2[1:31;
-logic [19:0]exp_LSB3[1:31];
+logic [19:0]exp_MSB2[1:31];
+//logic [19:0]exp_LSB[1:31];
 //logic [19:0]exp_MSB3[1:(2**wid_MSB3)];
 
 logic [wid_int-1 : 0]x_int;
 logic [wid_MSB1-1 : 0]x_msb1;
 logic [wid_MSB2-1:0]x_msb2;
 //logic [wid_MSB3-1:0]x_msb3;
-logic [(16-wid_int-wid_MSB1-wid_MSB2):0]x_lsb3;
-logic [19:0]ans_int,ans_msb1,ans_msb2,ans_lsb3;
+logic [(16-wid_int-wid_MSB1-wid_MSB2):0]x_lsb;
+logic [19:0]ans_int,ans_msb1,ans_msb2,ans_lsb;
 logic [31:0]ans_1,ans_2,ans_3;
 logic [20:0]ans;
 logic [4:0]position, position1,position2,position3;
@@ -53,7 +53,7 @@ logic [12:0]Carry;
 assign x_int = x[16:(17-wid_int)];
 assign x_msb1 = x[(16-wid_int):(17-wid_int-wid_MSB1)];
 assign x_msb2 = x[(16-wid_int-wid_MSB1):(17-wid_int-wid_MSB1-wid_MSB2)];
-assign x_lsb3 = x[(16-wid_int-wid_MSB1-wid_MSB2):0];
+assign x_lsb = x[(16-wid_int-wid_MSB1-wid_MSB2):0];
 
 
 ///////////// 4 bits position data, 16bits value
@@ -150,7 +150,7 @@ assign exp_MSB2[30] = 20'b00011000011100110001;
 assign exp_MSB2[31] = 20'b00011000011110111001;
 
  
- integer i,j,k,m,n;
+ integer j,k,m,n;
 assign j = (x_int == 5'b11010) ? 1 :
            (x_int == 5'b11001) ? 2 :
            (x_int == 5'b11000) ? 3 :
@@ -240,7 +240,7 @@ assign m = (({x_int[4],x_msb2} == 5'b11111) ? 1 :
            ({x_int[4],x_msb2} == 5'b01101) ? 29 :
            ({x_int[4],x_msb2} == 5'b01110) ? 30 :
            ({x_int[4],x_msb2} == 5'b01111) ? 31 :
-           0;
+           0);
            
 assign  ans_msb2 = exp_MSB2[m];
    
@@ -260,12 +260,13 @@ exdcr_hyb s2(one[i],tayl[i],Carry[i-1],flag,Carry[i],ans_lsb[i+3] );
 end
 endgenerate  
 
-assign ans_lsb3[2:0] = 3'd0;
-assign ans_lsb3[19:16] = 4'd1;
+assign ans_lsb[2:0] = 3'd0;
+assign ans_lsb[19:16] = 4'd1;
+
 assign position1 = ((32 - (ans_int[19:16] + ans_msb1[19:16]) ) > 16) ?  (32-(ans_int[19:16] + ans_msb1[19:16])-16) :0;
 assign position2 = ((16+position1-ans_msb2[19:16]) > 16) ? (16+position1-ans_msb2[19:16]-16) :0;
 // 64-(ans_int[19:16] + ans_msb1[19:16] + ans_msb2[19:16] + ans_lsb[19:16]);
-assign position3 = ((16+position2-ans_lsb3[19:16]) > 16) ? (16+position2-ans_lsb3[19:16]-16) :0;
+assign position3 = ((16+position2-ans_lsb[19:16]) > 16) ? (16+position2-ans_lsb[19:16]-16) :0;
 assign position = (position3 < 16) ? (16-position3) : 0;
 booth #(.N(16),.lsb(0)) b1
             ( .a(ans_int[15:0]),
@@ -277,7 +278,7 @@ booth #(.N(16),.lsb(0)) b2
              .res(ans_2));
 booth #(.N(16),.lsb(1)) b3
             ( .a(ans_2[31:16]),
-             .b(ans_lsb3[15:0]),
+             .b(ans_lsb[15:0]),
              .res(ans_3));          
 //assign ans_1 = ans_int[15:0]*ans_msb1[15:0];
 //assign ans_2 = ans_1[31:16]*ans_msb2[15:0];
