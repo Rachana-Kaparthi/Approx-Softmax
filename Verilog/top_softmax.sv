@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module top_softmax #(parameter wid_int = 5, wid_MSB1 = 4, wid_MSB2 = 4, wid_LSB = 8, size = 5)(input [15:0]x[1:5], output [16:0]softmax[1:5] );
+module top_softmax #(parameter wid_int = 5, wid_MSB1 = 4, wid_MSB2 = 4, wid_LSB = 8, size = 5)(input [16:0]x[1:5], output [16:0]softmax[1:5] );
 
 logic [36:0]den;
 logic [20:0]exp[1:5];  // 5bits position and 16bits exponent value
