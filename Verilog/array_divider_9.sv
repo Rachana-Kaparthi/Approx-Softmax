@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module array_divider(input [7:0]X,[8:0]Y,output [7:0]RH,[7:0]QH);
+module array_divider9(input [7:0]X,[8:0]Y,output [7:0]RH,[7:0]QH);
 wire [8:0]XH; 
 wire [8:0]Bout1,Bout2,Bout3,Bout4,Bout5,Bout6,Bout7,Bout8;
 wire [8:0]R1,R2,R3,R4,R5,R6,R7,R8;
