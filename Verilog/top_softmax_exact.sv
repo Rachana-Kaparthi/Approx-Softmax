@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module top_softmax #(parameter wid_int = 5, wid_MSB1 = 4, wid_MSB2 = 4,wid_MSB3 = 4, wid_LSB = 0, size = 5)(input [16:0]x[1:5], output [16:0]softmax[1:5] );
+module top_softmax #(parameter wid_int = 5, wid_MSB1 = 4, wid_MSB2 = 0,wid_MSB3 = 0, wid_LSB = 8,  size = 5)(input [16:0]x[1:5], output [16:0]softmax[1:5] );
 
 logic [36:0]den;
 logic [20:0]exp[1:5];  // 5bits position and 16bits exponent value
@@ -29,11 +29,11 @@ logic [31:0]rem[1:5];
 logic [5:0]LOD_nu[1:5];
 logic [4:0]LOD_de;
 logic [4:0]quo_append[1:5];
-softmax_8 #(.wid_int(wid_int), .wid_MSB1(wid_MSB1), .wid_MSB2(wid_MSB2), .wid_MSB3(wid_MSB3), .wid_LSB1(wid_LSB1), .wid_LSB2(wid_LSB2), .wid_LSB3(wid_LSB3)) a1 (x[1],exp[1]);
-softmax_8 #(.wid_int(wid_int), .wid_MSB1(wid_MSB1), .wid_MSB2(wid_MSB2), .wid_MSB3(wid_MSB3), .wid_LSB1(wid_LSB1), .wid_LSB2(wid_LSB2), .wid_LSB3(wid_LSB3)) a2 (x[2],exp[2]);
-softmax_8 #(.wid_int(wid_int), .wid_MSB1(wid_MSB1), .wid_MSB2(wid_MSB2), .wid_MSB3(wid_MSB3), .wid_LSB1(wid_LSB1), .wid_LSB2(wid_LSB2), .wid_LSB3(wid_LSB3)) a3 (x[3],exp[3]);
-softmax_8 #(.wid_int(wid_int), .wid_MSB1(wid_MSB1), .wid_MSB2(wid_MSB2), .wid_MSB3(wid_MSB3), .wid_LSB1(wid_LSB1), .wid_LSB2(wid_LSB2), .wid_LSB3(wid_LSB3)) a4 (x[4],exp[4]);
-softmax_8 #(.wid_int(wid_int), .wid_MSB1(wid_MSB1), .wid_MSB2(wid_MSB2), .wid_MSB3(wid_MSB3), .wid_LSB1(wid_LSB1), .wid_LSB2(wid_LSB2), .wid_LSB3(wid_LSB3)) a5 (x[5],exp[5]);
+softmax_8t #(.wid_int(wid_int), .wid_MSB1(wid_MSB1), .wid_MSB2(wid_MSB2), .wid_MSB3(wid_MSB3), .wid_LSB(wid_LSB)) a1 (x[1],exp[1]);
+softmax_8t #(.wid_int(wid_int), .wid_MSB1(wid_MSB1), .wid_MSB2(wid_MSB2), .wid_MSB3(wid_MSB3), .wid_LSB(wid_LSB)) a2 (x[2],exp[2]);
+softmax_8t #(.wid_int(wid_int), .wid_MSB1(wid_MSB1), .wid_MSB2(wid_MSB2), .wid_MSB3(wid_MSB3),.wid_LSB(wid_LSB)) a3 (x[3],exp[3]);
+softmax_8t #(.wid_int(wid_int), .wid_MSB1(wid_MSB1), .wid_MSB2(wid_MSB2), .wid_MSB3(wid_MSB3), .wid_LSB(wid_LSB)) a4 (x[4],exp[4]);
+softmax_8t #(.wid_int(wid_int), .wid_MSB1(wid_MSB1), .wid_MSB2(wid_MSB2), .wid_MSB3(wid_MSB3),.wid_LSB(wid_LSB)) a5 (x[5],exp[5]);
 //denominator a6( exp[1][20:0],exp[2][20:0],exp[3][20:0],exp[4][20:0],exp[5][20:0], den);
 
 denominator b1 (
