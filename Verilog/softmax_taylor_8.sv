@@ -21,7 +21,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module softmax_8 #(parameter wid_int = 5, wid_MSB1 = 4, wid_MSB2 = 0,wid_MSB3 = 0, wid_LSB=8)(input [16:0]x, output [20:0]exp);
+module softmax_8t #(parameter wid_int = 5, wid_MSB1 = 4, wid_MSB2 = 0,wid_MSB3 = 0, wid_LSB=8)(input [16:0]x, output [20:0]exp);
 
 /// x range -10 to 10
 
@@ -118,7 +118,7 @@ assign exp_MSB1[31] = 20'b00101010001101101110;
 
  
   
- integer i,j,k,m,n;
+ integer j,k,m,n;
 assign j = (x_int == 5'b11010) ? 1 :
            (x_int == 5'b11001) ? 2 :
            (x_int == 5'b11000) ? 3 :
@@ -181,7 +181,7 @@ assign ans_msb1 = exp_MSB1[k];
 
 assign flag = x[16];    
 assign one = 13'b1000000000000;
- assign tayl = {5'd0, x_lsb3};
+ assign tayl = {5'd0, x_lsb};
 
 exdcr_hyb s1(one[0],tayl[0],1'b0,flag,Carry[0],ans_lsb[3] );  
 
