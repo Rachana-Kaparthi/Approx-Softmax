@@ -21,7 +21,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module softmax_8 #(parameter wid_int = 5, wid_MSB1 = 4, wid_MSB2 = 0,wid_MSB3 = 0, wid_LSB1=0, wid_LSB2 = 4, wid_LSB3 = 4 )(input [16:0]x, output [20:0]exp);
+module softmax_8 #(parameter wid_int = 5, wid_MSB1 = 4, wid_MSB2 = 0,wid_MSB3 = 0, wid_LSB1=8)(input [16:0]x, output [20:0]exp);
 
 /// x range -10 to 10
 
