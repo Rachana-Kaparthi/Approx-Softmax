@@ -54,7 +54,7 @@ for(i=1;i<=5;i++)begin
 
 array_divider a7 (exp[i][15:8], den[31:0],rem[i],quo[i][15:8]);
 //log_input[i] = {rem[i],exp[i][7:0],24'b0};
-LOD a8(.sel(LOD_nu[i]),.data( {rem[i],exp[i][7:0],24'b0}));
+LOD64 a8(.sel(LOD_nu[i]),.data( {rem[i],exp[i][7:0],24'b0}));
 
 log_divider a10 (.pos_nu(exp[i][20:16]),.pos_de(den[36:32]),
    .num( {rem[i],exp[i][7:0],24'b0}),
