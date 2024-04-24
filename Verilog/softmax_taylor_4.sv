@@ -246,7 +246,7 @@ assign  ans_msb2 = exp_MSB2[m];
    
 assign flag = x[16];    
 assign one = 13'b1000000000000;
-assign tayl = {5'd0, x_lsb};
+assign tayl = {9'd0, x_lsb};
 
 exdcr_hyb s1(one[0],tayl[0],1'b0,flag,Carry[0],ans_lsb[3] );  
 
