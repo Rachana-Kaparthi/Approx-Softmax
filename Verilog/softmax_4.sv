@@ -21,22 +21,22 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module softmax #(parameter wid_int = 5, wid_MSB1 = 4, wid_MSB2 = 4, wid_LSB = 4, wid_MSB3 = 0)(input [16:0]x, output [20:0]exp);
+module softmax_4 #(parameter wid_int = 5, wid_MSB1 = 4, wid_MSB2 = 4, wid_LSB3 = 4, wid_MSB3 = 0)(input [16:0]x, output [20:0]exp);
 
 /// x range -10 to 10
 
 logic [19:0]exp_int[1:21]; 
-logic [19:0]exp_MSB1[1:(2**wid_MSB1)];
-logic [19:0]exp_MSB2[1:(2**wid_MSB2)];
-logic [19:0]exp_LSB[1:(2**wid_LSB)];
+logic [19:0]exp_MSB1[1:31];
+logic [19:0]exp_MSB2[1:31;
+logic [19:0]exp_LSB3[1:31];
 //logic [19:0]exp_MSB3[1:(2**wid_MSB3)];
 
 logic [wid_int-1 : 0]x_int;
 logic [wid_MSB1-1 : 0]x_msb1;
 logic [wid_MSB2-1:0]x_msb2;
 //logic [wid_MSB3-1:0]x_msb3;
-logic [(16-wid_int-wid_MSB1-wid_MSB2):0]x_lsb;
-logic [19:0]ans_int,ans_msb1,ans_msb2,ans_lsb;
+logic [(16-wid_int-wid_MSB1-wid_MSB2):0]x_lsb3;
+logic [19:0]ans_int,ans_msb1,ans_msb2,ans_lsb3;
 logic [31:0]ans_1,ans_2,ans_3;
 logic [20:0]ans;
 logic [4:0]position, position1,position2,position3;
@@ -48,7 +48,7 @@ logic [4:0]position, position1,position2,position3;
 assign x_int = x[16:(17-wid_int)];
 assign x_msb1 = x[(16-wid_int):(17-wid_int-wid_MSB1)];
 assign x_msb2 = x[(16-wid_int-wid_MSB1):(17-wid_int-wid_MSB1-wid_MSB2)];
-assign x_lsb = x[(16-wid_int-wid_MSB1-wid_MSB2):0];
+assign x_lsb3 = x[(16-wid_int-wid_MSB1-wid_MSB2):0];
 ///////////// 4 bits position data, 16bits value
 
 
@@ -76,41 +76,71 @@ assign exp_int[21] = 20'b11111010110000010100;
 
 ////////////////////// 2 bits integer and 14 bits fraction -- position data 0010 --- values are exp(0000) to exp(1111)
 
-assign exp_MSB1[1] = 20'b00100100000000000000;
-assign exp_MSB1[2] = 20'b00100100010000100000;
-assign exp_MSB1[3] = 20'b00100100100010000101;
-assign exp_MSB1[4] = 20'b00100100110100110010;
-assign exp_MSB1[5] = 20'b00100101001000101101;
-assign exp_MSB1[6] = 20'b00100101011101111010;
-assign exp_MSB1[7] = 20'b00100101110100011110;
-assign exp_MSB1[8] = 20'b00100110001100100000;
-assign exp_MSB1[9] = 20'b00100110100110000100;
-assign exp_MSB1[10] = 20'b00100111000001010010;
-assign exp_MSB1[11] = 20'b00100111011110010001;
-assign exp_MSB1[12] = 20'b00100111111101000111;
-assign exp_MSB1[13] = 20'b00101000011101111100;
-assign exp_MSB1[14] = 20'b00101001000000111001;
-assign exp_MSB1[15] = 20'b00101001100110000111;
-assign exp_MSB1[16] = 20'b00101010001101101110;
+assign exp_MSB1[1] = 20'b00100001100100010000;
+assign exp_MSB1[2] = 20'b00100001101010101101;
+assign exp_MSB1[3] = 20'b00100001110001100110;
+assign exp_MSB1[4] = 20'b00100001111000111011;
+assign exp_MSB1[5] = 20'b00100010000000101110;
+assign exp_MSB1[6] = 20'b00100010001001000001;
+assign exp_MSB1[7] = 20'b00100010010001110111;
+assign exp_MSB1[8] = 20'b00100010011011010001;
+assign exp_MSB1[9] = 20'b00100010100101010010;
+assign exp_MSB1[10] = 20'b00100010101111111100;
+assign exp_MSB1[11] = 20'b00100010111011010010;
+assign exp_MSB1[12] = 20'b00100011000111010111;
+assign exp_MSB1[13] = 20'b00100011010100001110;
+assign exp_MSB1[14] = 20'b00100011100001111010;
+assign exp_MSB1[15] = 20'b00100011110000011111;
+assign exp_MSB1[16] = 20'b00100100000000000000;
+assign exp_MSB1[17] = 20'b00100100010000100000;
+assign exp_MSB1[18] = 20'b00100100100010000101;
+assign exp_MSB1[19] = 20'b00100100110100110010;
+assign exp_MSB1[20] = 20'b00100101001000101101;
+assign exp_MSB1[21] = 20'b00100101011101111010;
+assign exp_MSB1[22] = 20'b00100101110100011110;
+assign exp_MSB1[23] = 20'b00100110001100100000;
+assign exp_MSB1[24] = 20'b00100110100110000100;
+assign exp_MSB1[25] = 20'b00100111000001010010;
+assign exp_MSB1[26] = 20'b00100111011110010001;
+assign exp_MSB1[27] = 20'b00100111111101000111;
+assign exp_MSB1[28] = 20'b00101000011101111100;
+assign exp_MSB1[29] = 20'b00101001000000111001;
+assign exp_MSB1[30] = 20'b00101001100110000111;
+assign exp_MSB1[31] = 20'b00101010001101101110;
 
 //////////////////// 1bit integer and 15bits fraction ---position bits 4 bits ---  0001
 
-assign exp_MSB2[1] = 20'b00011000000000000000;
-assign exp_MSB2[2] = 20'b00011000000010000000;
-assign exp_MSB2[3] = 20'b00011000000100000001;
-assign exp_MSB2[4] = 20'b00011000000110000010;
-assign exp_MSB2[5] = 20'b00011000001000000100;
-assign exp_MSB2[6] = 20'b00011000001010000110;
-assign exp_MSB2[7] = 20'b00011000001100001001;
-assign exp_MSB2[8] = 20'b00011000001110001100;
-assign exp_MSB2[9] = 20'b00011000010000010000;
-assign exp_MSB2[10] = 20'b00011000010010010100;
-assign exp_MSB2[11] = 20'b00011000010100011001;
-assign exp_MSB2[12] = 20'b00011000010110011110;
-assign exp_MSB2[13] = 20'b00011000011000100100;
-assign exp_MSB2[14] = 20'b00011000011010101010;
-assign exp_MSB2[15] = 20'b00011000011100110001;
-assign exp_MSB2[16] = 20'b00011000011110111001;
+assign exp_MSB2[1] = 20'b00010111100010110111;
+assign exp_MSB2[2] = 20'b00010111100100110000;
+assign exp_MSB2[3] = 20'b00010111100110101001;
+assign exp_MSB2[4] = 20'b00010111101000100011;
+assign exp_MSB2[5] = 20'b00010111101010011101;
+assign exp_MSB2[6] = 20'b00010111101100011000;
+assign exp_MSB2[7] = 20'b00010111101110010100;
+assign exp_MSB2[8] = 20'b00010111110000001111;
+assign exp_MSB2[9] = 20'b00010111110010001100;
+assign exp_MSB2[10] = 20'b00010111110100001000;
+assign exp_MSB2[11] = 20'b00010111110110000110;
+assign exp_MSB2[12] = 20'b00010111111000000011;
+assign exp_MSB2[13] = 20'b00010111111010000010;
+assign exp_MSB2[14] = 20'b00010111111100000000;
+assign exp_MSB2[15] = 20'b00010111111110000000;
+assign exp_MSB2[16] = 20'b00011000000000000000;
+assign exp_MSB2[17] = 20'b00011000000010000000;
+assign exp_MSB2[18] = 20'b00011000000100000001;
+assign exp_MSB2[19] = 20'b00011000000110000010;
+assign exp_MSB2[20] = 20'b00011000001000000100;
+assign exp_MSB2[21] = 20'b00011000001010000110;
+assign exp_MSB2[22] = 20'b00011000001100001001;
+assign exp_MSB2[23] = 20'b00011000001110001100;
+assign exp_MSB2[24] = 20'b00011000010000010000;
+assign exp_MSB2[25] = 20'b00011000010010010100;
+assign exp_MSB2[26] = 20'b00011000010100011001;
+assign exp_MSB2[27] = 20'b00011000010110011110;
+assign exp_MSB2[28] = 20'b00011000011000100100;
+assign exp_MSB2[29] = 20'b00011000011010101010;
+assign exp_MSB2[30] = 20'b00011000011100110001;
+assign exp_MSB2[31] = 20'b00011000011110111001;
 
 /////////////////// 1bit integer and 15bits fraction
 //assign exp_LSB[1] = 20'b00011000000000000000;
@@ -122,22 +152,37 @@ assign exp_MSB2[16] = 20'b00011000011110111001;
 //assign exp_LSB[7] = 20'b00011000000001100000;
 //assign exp_LSB[8] = 20'b00011000000001110000;
 
-assign exp_LSB[1] = 20'b00011000000000000000;
-assign exp_LSB[2] = 20'b00011000000000001000;
-assign exp_LSB[3] = 20'b00011000000000010000;
-assign exp_LSB[4] = 20'b00011000000000011000;
-assign exp_LSB[5] = 20'b00011000000000100000;
-assign exp_LSB[6] = 20'b00011000000000101000;
-assign exp_LSB[7] = 20'b00011000000000110000;
-assign exp_LSB[8] = 20'b00011000000000111000;
-assign exp_LSB[9] = 20'b00011000000001000000;
-assign exp_LSB[10] = 20'b00011000000001001000;
-assign exp_LSB[11] = 20'b00011000000001010000;
-assign exp_LSB[12] = 20'b00011000000001011000;
-assign exp_LSB[13] = 20'b00011000000001100000;
-assign exp_LSB[14] = 20'b00011000000001101000;
-assign exp_LSB[15] = 20'b00011000000001110000;
-assign exp_LSB[16] = 20'b00011000000001111000;
+assign exp_LSB3[1] = 20'b00010111111110001000;
+assign exp_LSB3[2] = 20'b00010111111110010000;
+assign exp_LSB3[3] = 20'b00010111111110011000;
+assign exp_LSB3[4] = 20'b00010111111110100000;
+assign exp_LSB3[5] = 20'b00010111111110101000;
+assign exp_LSB3[6] = 20'b00010111111110110000;
+assign exp_LSB3[7] = 20'b00010111111110111000;
+assign exp_LSB3[8] = 20'b00010111111111000000;
+assign exp_LSB3[9] = 20'b00010111111111001000;
+assign exp_LSB3[10] = 20'b00010111111111010000;
+assign exp_LSB3[11] = 20'b00010111111111011000;
+assign exp_LSB3[12] = 20'b00010111111111100000;
+assign exp_LSB3[13] = 20'b00010111111111101000;
+assign exp_LSB3[14] = 20'b00010111111111110000;
+assign exp_LSB3[15] = 20'b00010111111111111000;
+assign exp_LSB3[16] = 20'b00011000000000000000;
+assign exp_LSB3[17] = 20'b00011000000000001000;
+assign exp_LSB3[18] = 20'b00011000000000010000;
+assign exp_LSB3[19] = 20'b00011000000000011000;
+assign exp_LSB3[20] = 20'b00011000000000100000;
+assign exp_LSB3[21] = 20'b00011000000000101000;
+assign exp_LSB3[22] = 20'b00011000000000110000;
+assign exp_LSB3[23] = 20'b00011000000000111000;
+assign exp_LSB3[24] = 20'b00011000000000111111;
+assign exp_LSB3[25] = 20'b00011000000001001000;
+assign exp_LSB3[26] = 20'b00011000000001010000;
+assign exp_LSB3[27] = 20'b00011000000001011000;
+assign exp_LSB3[28] = 20'b00011000000001100000;
+assign exp_LSB3[29] = 20'b00011000000001101000;
+assign exp_LSB3[30] = 20'b00011000000001110000;
+assign exp_LSB3[31] = 20'b00011000000001111000;
 
 //// For x[1]
 //assign {x_pos[1], x_int[1], x_msb1[1], x_msb2[1], x_lsb[1]} = {x[1][15:13], x[1][12:10], x[1][9:6], x[1][5:2], x[1][1:0]};
@@ -180,42 +225,72 @@ assign j = (x_int == 5'b11010) ? 1 :
            (x_int == 5'b01010) ? 21 :   0 ;      
 assign ans_int = exp_int [j]; 
 
-assign k = (x_msb1 == 4'b0000) ? 1 :
-           (x_msb1 == 4'b0001) ? 2 :
-           (x_msb1 == 4'b0010) ? 3 :
-           (x_msb1 == 4'b0011) ? 4 :
-           (x_msb1 == 4'b0100) ? 5 :
-           (x_msb1 == 4'b0101) ? 6 :
-           (x_msb1 == 4'b0110) ? 7 :
-           (x_msb1 == 4'b0111) ? 8 :
-           (x_msb1 == 4'b1000) ? 9 :
-           (x_msb1 == 4'b1001) ? 10 :
-           (x_msb1 == 4'b1010) ? 11 :
-           (x_msb1 == 4'b1011) ? 12 :
-           (x_msb1 == 4'b1100) ? 13 :
-           (x_msb1 == 4'b1101) ? 14 :
-           (x_msb1 == 4'b1110) ? 15 :
-           (x_msb1 == 4'b1111) ? 16 :
+assign k = ({x_int[4],x_msb1} == 5'b11111) ? 1 :
+           ({x_int[4],x_msb1} == 5'b11110) ? 2 :
+           ({x_int[4],x_msb1} == 5'b11101) ? 3 :
+           ({x_int[4],x_msb1} == 5'b11100) ? 4 :
+           ({x_int[4],x_msb1} == 5'b11011) ? 5 :
+           ({x_int[4],x_msb1} == 5'b11010) ? 6 :
+           ({x_int[4],x_msb1} == 5'b11001) ? 7 :
+           ({x_int[4],x_msb1} == 5'b11000) ? 8 :
+           ({x_int[4],x_msb1} == 5'b10111) ? 9 :
+           ({x_int[4],x_msb1} == 5'b10110) ? 10 :
+           ({x_int[4],x_msb1} == 5'b10101) ? 11 :
+           ({x_int[4],x_msb1} == 5'b10100) ? 12 :
+           ({x_int[4],x_msb1} == 5'b10011) ? 13 :
+           ({x_int[4],x_msb1} == 5'b10010) ? 14 :
+           ({x_int[4],x_msb1} == 5'b10001) ? 15 :
+           ({x_int[4],x_msb1} == 5'b00000) ? 16 :
+           ({x_int[4],x_msb1} == 5'b00001) ? 17:
+           ({x_int[4],x_msb1} == 5'b00010) ? 18 :
+           ({x_int[4],x_msb1} == 5'b00011) ? 19:
+           ({x_int[4],x_msb1} == 5'b00100) ? 20:
+           ({x_int[4],x_msb1} == 5'b00101) ? 21:
+           ({x_int[4],x_msb1} == 5'b00110) ? 22:
+           ({x_int[4],x_msb1} == 5'b00111) ? 23:
+           ({x_int[4],x_msb1} == 5'b01000) ? 24 :
+           ({x_int[4],x_msb1} == 5'b01001) ? 25 :
+           ({x_int[4],x_msb1} == 5'b01010) ? 26 :
+           ({x_int[4],x_msb1} == 5'b01011) ? 27 :
+           ({x_int[4],x_msb1} == 5'b01100) ? 28 :
+           ({x_int[4],x_msb1} == 5'b01101) ? 29 :
+           ({x_int[4],x_msb1} == 5'b01110) ? 30 :
+           ({x_int[4],x_msb1} == 5'b01111) ? 31 :
            0;
            
 assign ans_msb1 = exp_MSB1[k];
 
-assign m = (x_msb2 == 4'b0000) ? 1 :
-           (x_msb2 == 4'b0001) ? 2 :
-           (x_msb2 == 4'b0010) ? 3 :
-           (x_msb2 == 4'b0011) ? 4 :
-           (x_msb2 == 4'b0100) ? 5 :
-           (x_msb2 == 4'b0101) ? 6 :
-           (x_msb2 == 4'b0110) ? 7 :
-           (x_msb2 == 4'b0111) ? 8 :
-           (x_msb2 == 4'b1000) ? 9 :
-           (x_msb2 == 4'b1001) ? 10 :
-           (x_msb2 == 4'b1010) ? 11 :
-           (x_msb2 == 4'b1011) ? 12 :
-           (x_msb2 == 4'b1100) ? 13 :
-           (x_msb2 == 4'b1101) ? 14 :
-           (x_msb2 == 4'b1110) ? 15 :
-           (x_msb2 == 4'b1111) ? 16 :
+assign m = (({x_int[4],x_msb2} == 5'b11111) ? 1 :
+           ({x_int[4],x_msb2} == 5'b11110) ? 2 :
+           ({x_int[4],x_msb2} == 5'b11101) ? 3 :
+           ({x_int[4],x_msb2} == 5'b11100) ? 4 :
+           ({x_int[4],x_msb2} == 5'b11011) ? 5 :
+           ({x_int[4],x_msb2} == 5'b11010) ? 6 :
+           ({x_int[4],x_msb2} == 5'b11001) ? 7 :
+           ({x_int[4],x_msb2} == 5'b11000) ? 8 :
+           ({x_int[4],x_msb2} == 5'b10111) ? 9 :
+           ({x_int[4],x_msb2} == 5'b10110) ? 10 :
+           ({x_int[4],x_msb2} == 5'b10101) ? 11 :
+           ({x_int[4],x_msb2} == 5'b10100) ? 12 :
+           ({x_int[4],x_msb2} == 5'b10011) ? 13 :
+           ({x_int[4],x_msb2} == 5'b10010) ? 14 :
+           ({x_int[4],x_msb2} == 5'b10001) ? 15 :
+           ({x_int[4],x_msb2} == 5'b00000) ? 16 :
+           ({x_int[4],x_msb2} == 5'b00001) ? 17:
+           ({x_int[4],x_msb2} == 5'b00010) ? 18 :
+           ({x_int[4],x_msb2} == 5'b00011) ? 19:
+           ({x_int[4],x_msb2} == 5'b00100) ? 20:
+           ({x_int[4],x_msb2} == 5'b00101) ? 21:
+           ({x_int[4],x_msb2} == 5'b00110) ? 22:
+           ({x_int[4],x_msb2} == 5'b00111) ? 23:
+           ({x_int[4],x_msb2} == 5'b01000) ? 24 :
+           ({x_int[4],x_msb2} == 5'b01001) ? 25 :
+           ({x_int[4],x_msb2} == 5'b01010) ? 26 :
+           ({x_int[4],x_msb2} == 5'b01011) ? 27 :
+           ({x_int[4],x_msb2} == 5'b01100) ? 28 :
+           ({x_int[4],x_msb2} == 5'b01101) ? 29 :
+           ({x_int[4],x_msb2} == 5'b01110) ? 30 :
+           ({x_int[4],x_msb2} == 5'b01111) ? 31 :
            0;
            
 assign  ans_msb2 = exp_MSB2[m];
@@ -231,29 +306,44 @@ assign  ans_msb2 = exp_MSB2[m];
 assign ans_lsb = exp_LSB[n];
 */
 
-assign n = (x_lsb == 4'b0000) ? 1 :
-           (x_lsb == 4'b0001) ? 2 :
-           (x_lsb == 4'b0010) ? 3 :
-           (x_lsb == 4'b0011) ? 4 :
-           (x_lsb == 4'b0100) ? 5 :
-           (x_lsb == 4'b0101) ? 6 :
-           (x_lsb == 4'b0110) ? 7 :
-           (x_lsb == 4'b0111) ? 8 :
-           (x_lsb == 4'b1000) ? 9 :
-           (x_lsb == 4'b1001) ? 10 :
-           (x_lsb == 4'b1010) ? 11 :
-           (x_lsb == 4'b1011) ? 12 :
-           (x_lsb == 4'b1100) ? 13 :
-           (x_lsb == 4'b1101) ? 14 :
-           (x_lsb == 4'b1110) ? 15 :
-           (x_lsb == 4'b1111) ? 16 :
+assign n = ({x_int[4],x_lsb3} == 5'b11111) ? 1 :
+           ({x_int[4],x_lsb3} == 5'b11110) ? 2 :
+           ({x_int[4],x_lsb3} == 5'b11101) ? 3 :
+           ({x_int[4],x_lsb3} == 5'b11100) ? 4 :
+           ({x_int[4],x_lsb3} == 5'b11011) ? 5 :
+           ({x_int[4],x_lsb3} == 5'b11010) ? 6 :
+           ({x_int[4],x_lsb3} == 5'b11001) ? 7 :
+           ({x_int[4],x_lsb3} == 5'b11000) ? 8 :
+           ({x_int[4],x_lsb3} == 5'b10111) ? 9 :
+           ({x_int[4],x_lsb3} == 5'b10110) ? 10 :
+           ({x_int[4],x_lsb3} == 5'b10101) ? 11 :
+           ({x_int[4],x_lsb3} == 5'b10100) ? 12 :
+           ({x_int[4],x_lsb3} == 5'b10011) ? 13 :
+           ({x_int[4],x_lsb3} == 5'b10010) ? 14 :
+           ({x_int[4],x_lsb3} == 5'b10001) ? 15 :
+           ({x_int[4],x_lsb3} == 5'b00000) ? 16 :
+           ({x_int[4],x_lsb3} == 5'b00001) ? 17:
+           ({x_int[4],x_lsb3} == 5'b00010) ? 18 :
+           ({x_int[4],x_lsb3} == 5'b00011) ? 19:
+           ({x_int[4],x_lsb3} == 5'b00100) ? 20:
+           ({x_int[4],x_lsb3} == 5'b00101) ? 21:
+           ({x_int[4],x_lsb3} == 5'b00110) ? 22:
+           ({x_int[4],x_lsb3} == 5'b00111) ? 23:
+           ({x_int[4],x_lsb3} == 5'b01000) ? 24 :
+           ({x_int[4],x_lsb3} == 5'b01001) ? 25 :
+           ({x_int[4],x_lsb3} == 5'b01010) ? 26 :
+           ({x_int[4],x_lsb3} == 5'b01011) ? 27 :
+           ({x_int[4],x_lsb3} == 5'b01100) ? 28 :
+           ({x_int[4],x_lsb3} == 5'b01101) ? 29 :
+           ({x_int[4],x_lsb3} == 5'b01110) ? 30 :
+           ({x_int[4],x_lsb3} == 5'b01111) ? 31 :
            0;
            
-assign  ans_lsb = exp_LSB[n];
+assign  ans_lsb3 = exp_LSB3[n];
 assign position1 = ((32 - (ans_int[19:16] + ans_msb1[19:16]) ) > 16) ?  (32-(ans_int[19:16] + ans_msb1[19:16])-16) :0;
 assign position2 = ((16+position1-ans_msb2[19:16]) > 16) ? (16+position1-ans_msb2[19:16]-16) :0;
 // 64-(ans_int[19:16] + ans_msb1[19:16] + ans_msb2[19:16] + ans_lsb[19:16]);
-assign position3 = ((16+position2-ans_lsb[19:16]) > 16) ? (16+position2-ans_lsb[19:16]-16) :0;
+assign position3 = ((16+position2-ans_lsb3[19:16]) > 16) ? (16+position2-ans_lsb3[19:16]-16) :0;
 assign position = (position3 < 16) ? (16-position3) : 0;
 booth #(.N(16),.lsb(0)) b1
             ( .a(ans_int[15:0]),
@@ -265,7 +355,7 @@ booth #(.N(16),.lsb(0)) b2
              .res(ans_2));
 booth #(.N(16),.lsb(1)) b3
             ( .a(ans_2[31:16]),
-             .b(ans_lsb[15:0]),
+             .b(ans_lsb3[15:0]),
              .res(ans_3));          
 //assign ans_1 = ans_int[15:0]*ans_msb1[15:0];
 //assign ans_2 = ans_1[31:16]*ans_msb2[15:0];
