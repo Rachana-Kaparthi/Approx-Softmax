@@ -246,22 +246,22 @@ assign  ans_msb2 = exp_MSB2[m];
    
 assign flag = x[16];    
 assign one = 13'b1000000000000;
-assign tayl = {9'd0, x_lsb3};
+assign tayl = {5'd0, x_lsb};
 
-exdcr_hyb s1(one[0],tayl[0],1'b0,flag,Carry[0],ans_lsb3[3] );  
+exdcr_hyb s1(one[0],tayl[0],1'b0,flag,Carry[0],ans_lsb[3] );  
 
 genvar i;
 
 generate 
 for(i=1; i<13; i++)begin
 
-exdcr_hyb s2(one[i],tayl[i],Carry[i-1],flag,Carry[i],ans_lsb3[i+3] );  
+exdcr_hyb s2(one[i],tayl[i],Carry[i-1],flag,Carry[i],ans_lsb[i+3] );  
 
 end
 endgenerate  
 
 assign ans_lsb3[2:0] = 3'd0;
-
+assign ans_lsb3[19:16] = 4'd1;
 assign position1 = ((32 - (ans_int[19:16] + ans_msb1[19:16]) ) > 16) ?  (32-(ans_int[19:16] + ans_msb1[19:16])-16) :0;
 assign position2 = ((16+position1-ans_msb2[19:16]) > 16) ? (16+position1-ans_msb2[19:16]-16) :0;
 // 64-(ans_int[19:16] + ans_msb1[19:16] + ans_msb2[19:16] + ans_lsb[19:16]);
