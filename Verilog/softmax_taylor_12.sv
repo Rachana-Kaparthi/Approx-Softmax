@@ -21,17 +21,17 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module softmax_12 #(parameter wid_int = 5, wid_MSB1 = 0, wid_MSB2 = 0,wid_MSB3 = 0,  wid_LSB = 12 )(input [16:0]x, output [20:0]exp);
+module softmax_12t #(parameter wid_int = 5, wid_MSB1 = 0, wid_MSB2 = 0,wid_MSB3 = 0,  wid_LSB = 12 )(input [16:0]x, output [20:0]exp);
 
 /// x range -10 to 10
 
 logic [19:0]exp_int[1:21]; 
 logic [19:0]exp_LSB[1:31];
-l
+
 //logic [19:0]exp_MSB3[1:(2**wid_MSB3)];
 
 logic [wid_int-1 : 0]x_int;
-logic [wid_lSB1-1 : 0]x_lsb;
+//logic [wid_LSB-1 : 0]x_lsb;
 
 //logic [wid_MSB3-1:0]x_msb3;
 logic [(16-wid_int):0]x_lsb;
@@ -43,6 +43,11 @@ logic [4:0]position, position1,position2,position3;
 //logic [15:0]expval_MSB1[1:16];
 //logic [15:0]expval_MSB2[1:16];
 //logic [15:0]expval_LSB[1:4];
+
+logic flag;
+logic [12:0]one;
+logic [12:0]tayl;
+logic [12:0]Carry;
 
 assign x_int = x[16:(17-wid_int)];
 assign x_lsb = x[(16-wid_int):0];
@@ -102,7 +107,8 @@ assign ans_int = exp_int [j];
 
 assign flag = x[16];    
 assign one = 13'b1000000000000;
-assign tayl = {1'd0, x_lsb3};
+assign tayl = {1'd0, x_lsb};
+
 
 exdcr_hyb s1(one[0],tayl[0],1'b0,flag,Carry[0],ans_lsb[3] );  
 
@@ -119,14 +125,14 @@ endgenerate
 assign ans_lsb[2:0] = 3'd0;
 assign ans_lsb[19:16] = 4'd1;
 
-assign position1 = ((32 - (ans_int[19:16] + ans_lsb1[19:16]) ) > 16) ?  (32-(ans_int[19:16] + ans_lsb1[19:16])-16) :0;
+assign position1 = ((32 - (ans_int[19:16] + ans_lsb[19:16]) ) > 16) ?  (32-(ans_int[19:16] + ans_lsb[19:16])-16) :0;
 //assign position2 = ((16+position1-ans_lsb2[19:16]) > 16) ? (16+position1-ans_lsb2[19:16]-16) :0;
 // 64-(ans_int[19:16] + ans_msb1[19:16] + ans_msb2[19:16] + ans_lsb[19:16]);
 //assign position3 = ((16+position2-ans_lsb3[19:16]) > 16) ? (16+position2-ans_lsb3[19:16]-16) :0;
 assign position = (position1 < 16) ? (16-position1) : 0;
 booth #(.N(16),.lsb(0)) b1
             ( .a(ans_int[15:0]),
-             .b(ans_lsb1[15:0]),
+             .b(ans_lsb[15:0]),
              .res(ans_1));
              /*
 booth #(.N(16),.lsb(0)) b2
